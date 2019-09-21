@@ -1,0 +1,32 @@
+The goal of this python code is to explore how a group of boids following simple rules can
+show fairly complex group behaviour
+
+
+the idea is to create a boid class that generates an object with coordinates and simple rules
+to get the coordinates at the next time step based on it's neighbourhood
+
+
+each boid has a field of vision and it's position vector will be determined by it's position, velocity and
+it's neighbourhood's velocities.
+
+The boids must also have a rule to help them avoid obstacles including potentially other boids
+
+To do so I think I need to create a void class, generating about 100 bodies in a 800*800
+Screen. 
+
+
+Boids are little non equilateral triangles with a sense of direction.
+
+
+I need to figure out what their constant speed should be.
+
+
+I need to figure out how to make them avoid objects and other boids.
+
+
+
+
+
+The rules for generating next positions and velocities for all boids are rather simple,
+Can look up some references online.
+
