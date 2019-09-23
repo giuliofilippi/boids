@@ -11,14 +11,17 @@ from math import pi
 
 # useful variables
 
+# used to make animation
+mp4 = False
+
 # velocity of boids
-vel = 10
+vel = 14
 
 # field of vision
-field = 100
+field = 75
 
 # Boid size
-BOID_SIZE = 7
+BOID_SIZE = 8
 
 
 # get a random vector in dims dimensions
@@ -27,17 +30,29 @@ def get_rand_vec(dims):
     r = np.sqrt((x*x).sum())
     return x / r
 
+# distance between boids
 def distance(bird1, bird2):
     dx = (bird1.pos-bird2.pos)[0]
     dy = (bird1.pos-bird2.pos)[1]
     return np.linalg.norm(np.array([dx,dy]))
 
+# Get the points of triangle based on position and velocity vector
+def get_triangle_points(pos,direction):
+
+    normal = np.array([direction[1],-direction[0]])
+
+    x1 = pos + direction * BOID_SIZE
+    x2 = pos - normal * BOID_SIZE/4
+    x3 = pos + normal * BOID_SIZE/4
+
+    return [x1,x2,x3]
+
 # Class to keep track of boid position and velocity vectors
 class Boid:
     # Init function
     def __init__(self):
-        x = random.randrange(BOID_SIZE, 800 - BOID_SIZE)
-        y = random.randrange(BOID_SIZE, 800 - BOID_SIZE)
+        x = float(random.randrange(BOID_SIZE, 800 - BOID_SIZE))
+        y = float(random.randrange(BOID_SIZE, 800 - BOID_SIZE))
         self.pos = np.array([x,y])
         direction = get_rand_vec(2)
         self.velocity = vel*direction
@@ -72,8 +87,6 @@ class Boid:
     # also updates position of given boid
     def update(self, list_of_boids):
 
-
-
         neighbours = self.neighbours(list_of_boids)
 
         N = len(neighbours)
@@ -84,12 +97,16 @@ class Boid:
             com = self.pos
         else:
             com = sum([x.pos for x in neighbours])/N
-        move_vec1 = (com - self.pos)/100
+        move_vec1 = (com - self.pos)/75
+
 
         # Rule 2 : nearby boids repel each other
+        move_vec2 = np.array([0,0])
         for bird in neighbours:
             if distance(self,bird)<15:
-                self.pos += (self.pos - bird.pos)/5
+                move_vec2 += (self.pos - bird.pos)/4
+
+
 
 
         # Rule 3 : velocity matching. Add 1/8 of difference to nearby
@@ -98,12 +115,24 @@ class Boid:
             vel = self.velocity
         else:
             vel = sum([x.velocity for x in neighbours])/N
-        move_vec2 = (vel - self.velocity)/8
+        move_vec3 = (vel - self.velocity)/8
 
 
         # Changes
-        self.velocity += move_vec2
         self.velocity += move_vec1
+        self.velocity += move_vec2
+        self.velocity += move_vec3
+
+
+        # Rule 5 : Stay within boundaries
+        if self.pos[0] > 800 - 20:
+            self.velocity[0] -= 3
+        if self.pos[1] > 800 - 20:
+            self.velocity[1] -= 3
+        if self.pos[0] < 20:
+            self.velocity[0] += 3
+        if self.pos[1] < 20:
+            self.velocity[1] += 3
 
 
         # Rule 4 : acceleration
@@ -113,22 +142,8 @@ class Boid:
         if np.linalg.norm(self.velocity) > 10:
             self.velocity = 0.9 * self.velocity
 
-
-
+        # change position
         self.pos += self.velocity
-
-
-
-# Get the points of triangle based on position and velocity vector
-def get_triangle_points(pos,direction):
-
-    normal = np.array([direction[1],-direction[0]])
-
-    x1 = pos + direction * BOID_SIZE
-    x2 = pos - normal * BOID_SIZE/4
-    x3 = pos + normal * BOID_SIZE/4
-
-    return [x1,x2,x3]
 
 
 # makes list of N random boids
@@ -169,7 +184,13 @@ def main():
 
 
     # -------- Main Program Loop -----------
+    i = 0
     while not done:
+        i+=1
+
+        if mp4 == True:
+            filename = 'animation/'+'capture_'+str(i)+'.jpeg'
+            pygame.image.save(screen, filename)
 
         # --- Events
         for event in pygame.event.get():
@@ -181,16 +202,6 @@ def main():
 
         # --- Logic
         for boid in boid_list:
-
-            # Spawn the boid on other side if needed
-            if boid.pos[0] > 800 + BOID_SIZE:
-                boid.pos[0] = - BOID_SIZE
-            if boid.pos[1] > 800 + BOID_SIZE:
-                boid.pos[1] = - BOID_SIZE
-            if boid.pos[0] < - BOID_SIZE:
-                boid.pos[0] =  800 + BOID_SIZE
-            if boid.pos[1] < - BOID_SIZE:
-                boid.pos[1] =  800 + BOID_SIZE
 
             # change boid positions and velocities based on rules
             boid.update(boid_list)
