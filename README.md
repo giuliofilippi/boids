@@ -1,5 +1,5 @@
 # boids
-Boids is a term invented by Craig Reynolds in 1986 ([Wikipedia](https://en.wikipedia.org/wiki/Boids)). It describes computer generated groups of objects following simple 
+Boids is a term invented by Craig Reynolds in 1986 ([Wikipedia](https://en.wikipedia.org/wiki/Boids)). It describes computer generated objects following simple 
 rules that ultimately show group behaviour. This example is of interest because it shows how objects following
 very simple rules can act as a group, this phenomenon is called emergence.
 
