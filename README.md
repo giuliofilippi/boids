@@ -9,6 +9,8 @@ The three main rules these boids follow :
 * **alignment** : steer towards the average heading of local flockmates
 * **cohesion** : steer to move towards the average position (center of mass) of local flockmates
 
+Wikipedia photo
+
 <img src="rules.png" width="150" title="rules">
 
 Programming these Boids is a simple and popular exercise. Here I show my own implementation in python and pygame along with 
