@@ -13,7 +13,7 @@ Wikipedia photo
 
 <img src="rules.png" width="150" title="rules">
 
-Programming these Boids is a simple and popular exercise. Here I show my own implementation in python and pygame along with 
+Here I show my own implementation in python and pygame along with 
 some videos of these boid's behaviour.
 
 ![Gif](boids.gif)
